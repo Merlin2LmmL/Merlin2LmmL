@@ -1,22 +1,22 @@
 {
- "repos": 27,
+ "repos": 28,
  "langs": {
-  "JavaScript": 1639746,
+  "Python": 794986,
+  "Makefile": 8073,
+  "JavaScript": 1644928,
+  "CSS": 117597,
+  "HTML": 220859,
+  "Java": 930292,
+  "Batchfile": 4521,
   "C": 258619,
   "Assembly": 167952,
-  "Python": 792255,
-  "Verilog": 81396,
+  "Dockerfile": 952,
+  "Kotlin": 152719,
   "Shell": 48252,
-  "HTML": 186865,
-  "Makefile": 8073,
+  "Jupyter Notebook": 15219,
+  "Verilog": 81396,
   "SystemVerilog": 2142,
   "Linker Script": 331,
-  "Java": 930292,
-  "CSS": 117597,
-  "Batchfile": 4521,
-  "Rust": 247037,
-  "Jupyter Notebook": 15219,
-  "Dockerfile": 952,
-  "Kotlin": 152719
+  "Rust": 247037
  }
 }
