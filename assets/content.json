@@ -1,0 +1,42 @@
+{
+ "user": "Merlin2LmmL",
+ "about": [
+  "I build robots and the electronics inside them, from ROS 2 rovers to sensors on my own circuit boards.",
+  "Off the soldering iron: C, Rust and Verilog (yes, my own CPU), plus small games, sims and tools in JavaScript."
+ ],
+ "cards": [
+  {
+   "file": "robotics",
+   "title": "robotics",
+   "sub": "ROS 2, sensors, rovers",
+   "repo": "IMU-Stick",
+   "line": "USB motion sensor for my robot",
+   "motif": "imu"
+  },
+  {
+   "file": "pcb",
+   "title": "pcb design",
+   "sub": "designed in KiCad",
+   "repo": "LEDStars",
+   "line": "snowflake ornament, 25 LEDs",
+   "motif": "snow"
+  },
+  {
+   "file": "lowlevel",
+   "title": "low-level",
+   "sub": "C, Rust and Verilog",
+   "repo": "Verilog",
+   "line": "my own 32-bit CPU + ISA",
+   "motif": "cpu"
+  },
+  {
+   "file": "js",
+   "title": "JS worlds",
+   "sub": "games, sims, playgrounds",
+   "repo": "LiDAR-Sim",
+   "line": "drive a lidar robot in the browser",
+   "motif": "lidar"
+  }
+ ],
+ "secret": "you found it! now go build something :)"
+}

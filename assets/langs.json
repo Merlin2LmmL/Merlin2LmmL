@@ -1,0 +1,22 @@
+{
+ "repos": 27,
+ "langs": {
+  "JavaScript": 1639746,
+  "C": 258619,
+  "Assembly": 167952,
+  "Python": 792255,
+  "Verilog": 81396,
+  "Shell": 48252,
+  "HTML": 186865,
+  "Makefile": 8073,
+  "SystemVerilog": 2142,
+  "Linker Script": 331,
+  "Java": 930292,
+  "CSS": 117597,
+  "Batchfile": 4521,
+  "Rust": 247037,
+  "Jupyter Notebook": 15219,
+  "Dockerfile": 952,
+  "Kotlin": 152719
+ }
+}

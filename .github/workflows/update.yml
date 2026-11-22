@@ -1,0 +1,24 @@
+name: refresh language stats
+on:
+  schedule:
+    - cron: '0 4 * * *'   # daily
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - run: sudo apt-get update && sudo apt-get install -y ffmpeg
+      - run: python3 assets/gen.py
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: re-render the languages panel only when the numbers changed
+        run: |
+          if ! git diff --quiet assets/langs.json; then node assets/render/render.mjs languages; fi
+      - run: |
+          git config user.name github-actions
+          git config user.email github-actions@users.noreply.github.com
+          git add -A assets README.md
+          git diff --cached --quiet || (git commit -m "refresh language stats" && git push)
