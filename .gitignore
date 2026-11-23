@@ -1,4 +1,5 @@
-assets/header/frames/
-assets/header/test-*.png
+assets/header/
+assets/render/frames/
+assets/render/test-*.png
 preview.html
 __pycache__/
