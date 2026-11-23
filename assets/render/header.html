@@ -73,7 +73,8 @@ function frame(t){
   letters(33,'robots, circuit boards, my own CPU, and little JavaScript worlds',112,388,'29px LR',.2,PAT.mint,.5,.06);
   applyLight(LIGHT);
   ctx.restore();
-  return cv.toDataURL('image/png');
+  return window.PREVIEW?'':cv.toDataURL('image/png');
 }
-window.setup=function(){paperInit();S=makeSheet(W,H,[0,0,W,H],12,22,cutBoard);LIGHT=makeLight(W,H,380,60,1500);window.frame=frame;return {w:W,h:H,T:T,fps:FPS};};
+let DATA=null;
+window.setup=function(name,D){DATA=D||null;paperInit();S=makeSheet(W,H,[0,0,W,H],12,22,cutBoard);LIGHT=makeLight(W,H,380,60,1500);window.frame=frame;return {w:W,h:H,T:T,fps:FPS};};
 </script></body></html>

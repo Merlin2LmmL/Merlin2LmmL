@@ -3,6 +3,7 @@
 //   node render.mjs                        all images
 //   node render.mjs languages              only some
 //   node render.mjs --test about 1.5 4     still frames -> test-about-1.5.png ...
+// Every image is rendered once per board colour into assets/<colour>/; PALETTES=green,black limits the colours.
 import { spawn, spawnSync } from 'node:child_process';
 import { mkdirSync, writeFileSync, rmSync, readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
@@ -15,6 +16,7 @@ const ALL = ['header', 'about', 'card-0', 'card-1', 'card-2', 'card-3', 'languag
 let args = process.argv.slice(2), test = null;
 if (args[0] === '--test') { test = args.slice(2).map(Number); args = [args[1]]; }
 const targets = args.length ? args : ALL;
+const palettes = (process.env.PALETTES || 'green,black,white,blue,purple,red').split(',');
 const outName = t => t.startsWith('card-') ? 'card-' + content.cards[Number(t.slice(5))].file : t;
 const port = 9333, profile = path.join(os.tmpdir(), 'm2l-render-chrome');
 const chrome = spawn(process.env.CHROME || 'google-chrome', ['--headless=new', '--no-sandbox', '--disable-gpu', '--allow-file-access-from-files',
@@ -31,7 +33,8 @@ const evaluate = async expr => { const m = await send('Runtime.evaluate', { expr
 const fonts = Object.entries({ LB: 'black', LBo: 'bold', LR: 'reg', MO: 'mono' }).map(([fam, f]) => [fam, readFileSync(path.join(assets, 'fonts', f + '.woff2')).toString('base64')]);
 const loadFonts = '(async () => { for (const [n, b] of ' + JSON.stringify(fonts) + ') { const s = atob(b), u = new Uint8Array(s.length); for (let i = 0; i < s.length; i++) u[i] = s.charCodeAt(i); const f = new FontFace(n, u.buffer); await f.load(); document.fonts.add(f); } return true; })()';
 try {
-  for (const target of targets) {
+  for (const palette of test ? [palettes[0]] : palettes) for (const target of targets) {
+    content.palette = palette;
     const file = target === 'header' ? 'header.html' : 'panels.html';
     await send('Page.navigate', { url: 'file://' + path.join(here, file) + '?' + target });
     let ready = false;
@@ -41,10 +44,11 @@ try {
     const spec = JSON.parse(await evaluate('JSON.stringify(window.setup(' + JSON.stringify(target) + ', ' + JSON.stringify({ content, langs }) + '))'));
     const png = async t => Buffer.from((await evaluate('window.frame(' + t + ')')).split(',')[1], 'base64');
     if (test) { for (const t of test) writeFileSync(path.join(here, 'test-' + target + '-' + t + '.png'), await png(t)); continue; }
-    const dir = path.join(here, 'frames', target), N = Math.round(spec.T * spec.fps);
+    const dir = path.join(here, 'frames', palette + '-' + target), N = Math.round(spec.T * spec.fps);
     rmSync(dir, { recursive: true, force: true }); mkdirSync(dir, { recursive: true });
     for (let f = 0; f < N; f++) writeFileSync(path.join(dir, String(f).padStart(4, '0') + '.png'), await png(f / spec.fps));
-    const out = path.join(assets, outName(target) + '.avif');
+    mkdirSync(path.join(assets, palette), { recursive: true });
+    const out = path.join(assets, palette, outName(target) + '.avif');
     const r = spawnSync('ffmpeg', ['-y', '-loglevel', 'error', '-framerate', String(spec.fps), '-i', path.join(dir, '%04d.png'),
       '-filter_complex', '[0:v]format=yuva420p,split[c][a];[a]alphaextract[al]', '-map', '[c]', '-map', '[al]',
       '-c:v', 'libaom-av1', '-cpu-used', '6', '-row-mt', '1', '-crf', '32', '-b:v', '0', out], { stdio: 'inherit' });

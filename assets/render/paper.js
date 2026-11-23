@@ -1,7 +1,19 @@
 // Shared paper cut-out look for every panel: textured paper, a top sheet with the traces cut out of it,
 // pieces of paper with their own shadows, and stop-motion jitter. The page defines ctx (its 2d context).
 const PC={under:'#15302a',sheet:'#44705a',core:'#b4cbbb',tape:'#7fa38e',board:'#2d5543',gold:'#d4a94e',goldHi:'#ecc977',char:'#2a2a2c',silver:'#b9bfc2',tan:'#a8906a',
-  cream:'#f1e8d4',white:'#ece6d6',ochre:'#d9b56c',mint:'#cfe0d2',ink:'#1b1b1d',red:'#c9584a',yellow:'#e8c25a',blue:'#6f9cc9',green:'#86b77c'};
+  cream:'#f1e8d4',white:'#ece6d6',paper:'#ece6d6',ochre:'#d9b56c',mint:'#cfe0d2',ink:'#1b1b1d',red:'#c9584a',yellow:'#e8c25a',blue:'#6f9cc9',green:'#86b77c'};
+// board colours: under = paper below the cuts, sheet = top sheet, core = lighter paper seen at cut edges, tape = punched tape,
+// board = small board pieces; cream/mint/white/ochre are the text papers (dark on light boards)
+const PALETTES={
+  green:{under:'#15302a',sheet:'#44705a',core:'#b4cbbb',tape:'#7fa38e',board:'#2d5543'},
+  black:{under:'#0c0d0f',sheet:'#2b2d31',core:'#8e9196',tape:'#4b4e54',board:'#3a3d42'},
+  blue:{under:'#0e2034',sheet:'#2f5a86',core:'#b3c7dc',tape:'#6d8fb3',board:'#244a70'},
+  purple:{under:'#211431',sheet:'#5b3a7a',core:'#c9b7d9',tape:'#8a6fa6',board:'#4a2f66'},
+  red:{under:'#2e0f0f',sheet:'#8a2f2c',core:'#e0b5b0',tape:'#b06a64',board:'#6e2421'},
+  white:{under:'#8c9295',sheet:'#e6e4dd',core:'#ffffff',tape:'#c9cac5',board:'#d4d2ca',cream:'#2a2b2e',mint:'#555b5f',white:'#3a3c40',ochre:'#a7782a'},
+};
+const PC_BASE=Object.assign({},PC);
+function applyPalette(name){Object.assign(PC,PC_BASE,PALETTES[name]||PALETTES.green);}
 const CUT=5.2,FPS=12;
 let PAT={},BOIL=0;
 function mk(w,h){const c=document.createElement('canvas');c.width=w;c.height=h;return c;}
@@ -18,7 +30,7 @@ function tex(color,s){const n=384,c=mk(n,n),x=c.getContext('2d');x.fillStyle=col
   x.lineWidth=.7;for(let i=0;i<420;i++){const a=r()*7,l=5+r()*22,px=r()*n,py=r()*n;x.strokeStyle=r()<.5?'rgba(255,255,255,.09)':'rgba(0,0,0,.07)';
     x.beginPath();x.moveTo(px,py);x.quadraticCurveTo(px+Math.cos(a)*l*.5+r()*3,py+Math.sin(a)*l*.5,px+Math.cos(a)*l,py+Math.sin(a)*l);x.stroke();}
   return ctx.createPattern(c,'repeat');}
-function paperInit(extra){PAT={};const all=Object.assign({},PC,extra||{});let i=0;for(const k in all)PAT[k]=tex(all[k],++i*31);}
+function paperInit(extra){if(typeof DATA!=='undefined'&&DATA)applyPalette(DATA.content.palette);PAT={};const all=Object.assign({},PC,extra||{});let i=0;for(const k in all)PAT[k]=tex(all[k],++i*31);}
 // stop-motion: frames are quantised to 12 fps and every piece shifts a hair every second frame
 function setFrame(t){const n=Math.floor(t*FPS+1e-6);BOIL=Math.floor(n/2);return n/FPS;}
 function jit(id){return [(hash(id,BOIL*3)-.5)*.9,(hash(id,BOIL*3+1)-.5)*.9,(hash(id,BOIL*3+2)-.5)*.006];}
